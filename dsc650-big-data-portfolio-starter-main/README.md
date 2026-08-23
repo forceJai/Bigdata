@@ -185,7 +185,7 @@ Apache Spark provides the distributed processing and machine learning layer. The
 The application is submitted using `spark-submit` through YARN, demonstrating cluster-managed execution rather than local-only processing.
 
 <p align="center">
-  <img src="spark/screenshots/spark-training-output.png" alt="Spark MLlib training output" width="900">
+  <img src="spark/screenshots/spark-training-output1.png" alt="Spark MLlib training output" width="900">
 </p>
 
 <p align="center">
@@ -193,7 +193,7 @@ The application is submitted using `spark-submit` through YARN, demonstrating cl
 </p>
 
 <p align="center">
-  <img src="spark/screenshots/spark-submit-output.png" alt="Spark submit and YARN execution output" width="900">
+  <img src="spark/screenshots/spark-submit-output1.png" alt="Spark submit and YARN execution output" width="900">
 </p>
 
 **Implementation details:** [`spark/README.md`](spark/README.md)  
@@ -220,7 +220,7 @@ The target HBase table is created before Spark runs and is first verified with a
 </p>
 
 <p align="center">
-  <img src="hbase/screenshots/hbase-populated-scan.png" alt="Populated HBase scan after Spark execution" width="900">
+  <img src="hbase/screenshots/hbase-populated-scan_2.png" alt="Populated HBase scan after Spark execution" width="900">
 </p>
 
 **Implementation details:** [`hbase/README.md`](hbase/README.md)  
