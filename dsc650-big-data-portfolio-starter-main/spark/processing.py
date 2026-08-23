@@ -10,11 +10,12 @@ Recommended portfolio comments:
 - Why was Spark appropriate for this task?
 """
 from pyspark.sql import SparkSession
+from pyspark.sql.functions import monotonically_increasing_id, col
 from pyspark.ml import Pipeline
 from pyspark.ml.feature import StringIndexer, VectorAssembler, StandardScaler
 
 
-def get_spark_session(app_name="HiveDataProcessing"):
+def get_spark_session(app_name="HeartDiseaseDataProcessing"):
     """Initialize Spark Session with Hive metastore support."""
     return SparkSession.builder \
         .appName(app_name) \
@@ -23,31 +24,29 @@ def get_spark_session(app_name="HiveDataProcessing"):
 
 
 def read_from_hive(spark, db_name="heart_db", table_name="heart_disease"):
-    """Read raw tabular dataset directly from Hive warehouse."""
+    """Read dataset directly from Hive warehouse table heart_db.heart_disease."""
     df = spark.sql(f"SELECT * FROM {db_name}.{table_name}")
     return df
 
 
 def build_preprocessing_pipeline(categorical_cols, numeric_cols, label_col="target"):
-    """
-    Constructs a PySpark ML Pipeline for feature indexing and vector assembly.
-    """
+    """Constructs PySpark ML Pipeline for feature indexing and vector assembly."""
     stages = []
 
     # 1. Index categorical features
     indexed_cat_cols = []
-    for col in categorical_cols:
-        indexer = StringIndexer(inputCol=col, outputCol=f"{col}_indexed", handleInvalid="skip")
+    for c in categorical_cols:
+        indexer = StringIndexer(inputCol=c, outputCol=f"{c}_indexed", handleInvalid="skip")
         stages.append(indexer)
-        indexed_cat_cols.append(f"{col}_indexed")
+        indexed_cat_cols.append(f"{c}_indexed")
 
-    # 2. Index target label if categorical
+    # 2. Index target label
     label_indexer = StringIndexer(inputCol=label_col, outputCol="label", handleInvalid="skip")
     stages.append(label_indexer)
 
-    # 3. Assemble all features into a dense vector
+    # 3. Assemble features into dense vector
     feature_cols = numeric_cols + indexed_cat_cols
-    assembler = VectorAssembler(inputCols=feature_cols, outputCol="raw_features")
+    assembler = VectorAssembler(inputCols=feature_cols, outputCol="raw_features", handleInvalid="skip")
     stages.append(assembler)
 
     # 4. Standardize numeric features
@@ -58,15 +57,23 @@ def build_preprocessing_pipeline(categorical_cols, numeric_cols, label_col="targ
     return pipeline
 
 
-def preprocess_data(spark, db_name="default", table_name="raw_patient_data"):
-    """Executes the Hive query and transformations."""
+def preprocess_data(spark, db_name="heart_db", table_name="heart_disease"):
+    """Executes Hive read and feature prep for heart_disease table."""
     raw_df = read_from_hive(spark, db_name, table_name).dropna()
 
-    # Example feature schema definition
-    categorical_cols = ["gender", "admission_type"]
-    numeric_cols = ["age", "time_in_hospital", "num_lab_procedures"]
+    # Add unique patient identifier if not present
+    if "patient_id" not in raw_df.columns:
+        raw_df = raw_df.withColumn("patient_id", monotonically_increasing_id() + 1000)
 
-    pipeline = build_preprocessing_pipeline(categorical_cols, numeric_cols, label_col="readmitted")
+    # Define features based on standard heart disease schema
+    all_cols = raw_df.columns
+    target_col = "target" if "target" in all_cols else ("heart_disease" if "heart_disease" in all_cols else "label")
+
+    ignore_cols = ["patient_id", target_col]
+    numeric_cols = [c for c, t in raw_df.dtypes if t in ["int", "double", "float"] and c not in ignore_cols]
+    categorical_cols = [c for c, t in raw_df.dtypes if t == "string" and c not in ignore_cols]
+
+    pipeline = build_preprocessing_pipeline(categorical_cols, numeric_cols, label_col=target_col)
     pipeline_model = pipeline.fit(raw_df)
     processed_df = pipeline_model.transform(raw_df)
 
