@@ -2,32 +2,33 @@
 
 ## Role in the Pipeline
 
-Apache NiFi provides the ingestion and orchestration layer for this project. The completed flow retrieves the project dataset and writes it into HDFS for downstream processing.
+Apache NiFi provides the automated data ingestion and orchestration layer for this project. The flow retrieves the raw dataset directly from GitHub via HTTP and persists it into HDFS for downstream processing by Hive and Apache Spark MLlib.
 
 ## Source Dataset
 
-**Dataset:** [Enter dataset name]  
-**GitHub direct URL:** [Enter the direct/raw GitHub URL used by the NiFi HTTP processor]
+**Dataset:** Heart Disease / Healthcare Prediction Dataset (`heart.csv`)  
+**GitHub direct URL:** `https://raw.githubusercontent.com/forceJai/Bigdata/main/heart.csv`
 
-Briefly describe what the dataset contains and why it was selected.
+This dataset contains clinical patient features including demographic attributes (age, sex) and key physiological metrics (chest pain type, resting blood pressure, serum cholesterol, fasting blood sugar, resting ECG, maximum heart rate, exercise-induced angina, and ST depression). The primary target variable is binary (`target`: 0 = No Heart Disease, 1 = Heart Disease). It was selected because it provides a realistic, structured healthcare scenario suitable for binary classification modeling using PySpark MLlib without causing memory overhead or resource strain on the infrastructure.
 
 ## Flow Design
 
-Describe the important processors used in the final NiFi flow and the role each processor performs.
-
 | Processor / Process Group | Role in the Flow |
 |---|---|
-| [Processor name] | [What it does] |
-| [Processor name] | [What it does] |
-| [Processor name] | [What it does] |
+| **InvokeHTTP** (*Download File*) | Executes an HTTP GET request to pull the raw `heart.csv` file from the remote GitHub URL on a scheduled interval. |
+| **UpdateAttribute** (*Update File Name*) | Enriches FlowFile metadata by setting an explicit output filename (`filename = heart.csv`). |
+| **PutHDFS** (*Write File to HDFS*) | Streams the FlowFile payload directly into Hadoop Distributed File System (HDFS) using the cluster's `core-site.xml` configuration. |
 
-Explain how data moves from the source URL through NiFi and into HDFS.
+### Data Flow Lifecycle
+1. **Data Ingestion:** The `InvokeHTTP` processor fetches the dataset from GitHub and creates an initial FlowFile containing the CSV payload.
+2. **Attribute Transformation:** The FlowFile passes to `UpdateAttribute`, which attaches target naming metadata to ensure consistency in storage.
+3. **HDFS Persistence:** The `PutHDFS` processor receives the FlowFile, resolves the Hadoop cluster NameNode connection, and writes the contents directly to the target HDFS directory.
 
 ## HDFS Destination
 
-**HDFS path:** `[Enter final HDFS path]`
+**HDFS path:** `/tmp/`
 
-Explain where NiFi writes the dataset and how the destination is used by the next stage of the pipeline.
+NiFi writes the dataset into `/tmp/heart.csv` in distributed storage. This directory serves as the landing location for Stage 2 of the pipeline, where Apache Hive external tables are defined over the raw CSV file to enable structured SQL querying, schema enforcement, and feature extraction for PySpark.
 
 ## Execution Evidence
 
@@ -43,4 +44,4 @@ Explain where NiFi writes the dataset and how the destination is used by the nex
 
 ![HDFS Verification](screenshots/hdfs-ingestion-verification.png)
 
-The HDFS screenshot should show the `hdfs dfs -ls` output confirming that the project dataset was successfully written into HDFS.
+The HDFS verification screenshot confirms successful execution using `hdfs dfs -ls /user/root/data/`, verifying that `heart.csv` is stored in HDFS distributed storage with a non-zero byte size.
