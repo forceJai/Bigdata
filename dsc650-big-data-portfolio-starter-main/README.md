@@ -233,7 +233,7 @@ The target HBase table is created before Spark runs and is first verified with a
 The implementation also captures the supporting environment configuration required to connect Spark and HBase, including package installation and HBase Thrift server startup.
 
 <p align="center">
-  <img src="docs/screenshots/package-installation.png" alt="Required package installation" width="900">
+  <img src="docs/screenshots/package-installation.1png" alt="Required package installation" width="900">
 </p>
 
 <p align="center">
