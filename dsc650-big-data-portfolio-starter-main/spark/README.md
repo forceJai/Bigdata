@@ -43,7 +43,7 @@ Explain what the resulting values indicate about model performance.
 
 ### Training Output
 
-![Spark Training Output](screenshots/spark-training-output.png)
+![Spark Training Output](screenshots/spark-training-output1.png)
 
 ### Model Evaluation
 
@@ -59,7 +59,7 @@ Document the exact `spark-submit` command used to submit the PySpark application
 
 Briefly describe the successful execution and any important log or output information.
 
-![Spark Submit Output](screenshots/spark-submit-output.png)
+![Spark Submit Output](screenshots/spark-submit-output1.png)
 
 ## HBase Output
 
