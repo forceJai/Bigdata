@@ -6,6 +6,8 @@ a separate analysis script. Delete this file if it is not needed.
 """
 
 import time
+import sys
+import os
 from datetime import datetime
 import happybase
 from pyspark.sql import SparkSession
