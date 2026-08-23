@@ -11,6 +11,8 @@ import happybase
 from pyspark.sql import SparkSession
 from pyspark.ml.classification import LogisticRegression
 from pyspark.ml.evaluation import BinaryClassificationEvaluator, MulticlassClassificationEvaluator
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from spark.processing import preprocess_data
 
 HBASE_HOST = 'master'  # Target HBase Thrift master host (not localhost)
