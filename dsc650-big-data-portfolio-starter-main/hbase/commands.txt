@@ -1,10 +1,12 @@
 # DSC 650 Portfolio Starter
 # Replace these comments with representative HBase commands from your project.
 #
-# Suggested examples:
-#   create ...
-#   put ...
-#   get ...
-#   scan ...
-#
-# Add brief comments so a reviewer understands what each group of commands demonstrates.
+-- Create model_metrics table with two column families
+create 'model_metrics', 'metrics', 'predictions'
+
+-- Describe table structure
+describe 'model_metrics'
+
+-- Execute initial scan prior to Spark execution
+scan 'model_metrics'
+
