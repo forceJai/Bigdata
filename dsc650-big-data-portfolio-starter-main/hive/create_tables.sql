@@ -23,5 +23,5 @@ CREATE EXTERNAL TABLE IF NOT EXISTS heart_disease (
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 STORED AS TEXTFILE
-LOCATION '/user/root/data/'
+LOCATION '/tmp/heart.csv'
 TBLPROPERTIES ("skip.header.line.count"="1");
