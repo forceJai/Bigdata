@@ -76,7 +76,7 @@ metrics_payload = [
 
 # Step 10: Write metrics to HBase via Thrift using happybase
 def write_to_hbase_partition(partition):
-    connection = happybase.Connection('localhost', port=9090)
+    connection = happybase.Connection('master', port=9090)
     connection.open()
     table = connection.table('model_metrics')
     for row in partition:
