@@ -50,40 +50,40 @@ Complete this checklist before submitting your repository URL.
 
 ## Objective 6 — Spark Submit / YARN
 
-- [ ] `spark/README.md` includes my `spark-submit` command.
-- [ ] `spark/screenshots/spark-submit-output.png` shows successful execution/log output through YARN.
+- [x] `spark/README.md` includes my `spark-submit` command.
+- [x] `spark/screenshots/spark-submit-output.png` shows successful execution/log output through YARN.
 
 ## Objective 7 — HBase Verification
 
-- [ ] `hbase/screenshots/hbase-populated-scan.png` shows the populated table after Spark runs.
-- [ ] `hbase/README.md` explains the metrics written by Spark and how the scan verifies the pipeline.
+- [x] `hbase/screenshots/hbase-populated-scan.png` shows the populated table after Spark runs.
+- [x] `hbase/README.md` explains the metrics written by Spark and how the scan verifies the pipeline.
 
 ## Overall Documentation
 
-- [ ] `architecture/architecture-diagram.png` is present.
-- [ ] `docs/project-summary.md` includes my implementation summary.
-- [ ] I documented what worked and what did not.
-- [ ] I documented meaningful challenges and how I addressed them.
-- [ ] I summarized the final results.
-- [ ] I included lessons learned.
-- [ ] I explained what I would change for a production deployment.
-- [ ] My dataset is my own and is not a course-provided example dataset.
-- [ ] My direct GitHub dataset URL is documented.
+- [x] `architecture/architecture-diagram.png` is present.
+- [x] `docs/project-summary.md` includes my implementation summary.
+- [x] I documented what worked and what did not.
+- [x] I documented meaningful challenges and how I addressed them.
+- [x] I summarized the final results.
+- [x] I included lessons learned.
+- [x] I explained what I would change for a production deployment.
+- [x] My dataset is my own and is not a course-provided example dataset.
+- [x] My direct GitHub dataset URL is documented.
 
 ## Security
 
-- [ ] No passwords are committed.
-- [ ] No API keys or access tokens are committed.
-- [ ] No private keys or certificates are committed.
-- [ ] No sensitive or restricted data is committed.
-- [ ] No personally identifiable information is exposed.
-- [ ] No instructor solution material is included.
-- [ ] My screenshots do not expose credentials or sensitive environment information.
+- [x] No passwords are committed.
+- [x] No API keys or access tokens are committed.
+- [x] No private keys or certificates are committed.
+- [x] No sensitive or restricted data is committed.
+- [x] No personally identifiable information is exposed.
+- [x] No instructor solution material is included.
+- [x] My screenshots do not expose credentials or sensitive environment information.
 
 ## Final Submission
 
-- [ ] All starter placeholders have been replaced with my own work.
-- [ ] All required images display correctly in GitHub.
-- [ ] All links in the repository work.
-- [ ] My repository is complete.
-- [ ] I submitted the GitHub repository URL in the Week 11 Final Project assignment area.
+- [x] All starter placeholders have been replaced with my own work.
+- [x] All required images display correctly in GitHub.
+- [x] All links in the repository work.
+- [x] My repository is complete.
+- [x] I submitted the GitHub repository URL in the Week 11 Final Project assignment area.
