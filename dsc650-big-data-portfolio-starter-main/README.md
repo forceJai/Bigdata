@@ -14,6 +14,9 @@ This project delivers a complete big data pipeline that integrates **Apache NiFi
 The implementation demonstrates how distributed data platforms work together to move data from ingestion through distributed storage, SQL access, machine learning, and persistent NoSQL results. The project combines **cloud infrastructure, containerization, data engineering, distributed processing, machine learning, cluster resource management, and system integration** in one working pipeline.
 
 ### End-to-End Data Flow
+<p align="center">
+  <img src="architecture/DataFlow-Architecture.png" alt="DSC 650 end-to-end data flow" width="1000">
+</p>
 
 **Source Data → Apache NiFi → HDFS → Apache Hive → Apache Spark MLlib → Apache HBase**
 

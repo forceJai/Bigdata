@@ -4,9 +4,9 @@ Complete this checklist before submitting your repository URL.
 
 ## Repository
 
-- [ ] My final project is in a repository under my own GitHub account.
-- [ ] I did not submit changes or a pull request to the instructor's starter repository.
-- [ ] The instructor can access my repository.
+- [x] My final project is in a repository under my own GitHub account.
+- [x] I did not submit changes or a pull request to the instructor's starter repository.
+- [x] The instructor can access my repository.
 - [ ] I kept the required folder structure.
 - [ ] The root `README.md` renders correctly.
 
