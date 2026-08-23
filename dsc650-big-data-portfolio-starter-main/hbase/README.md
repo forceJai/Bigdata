@@ -23,3 +23,16 @@
   * HBase stores data in lexicographical order based on the row key. Prefixing row keys with an execution timestamp ensures that training runs are stored chronologically.
   * Including the algorithm name avoids key collisions when multiple model variants are evaluated within the same job execution window.
   * This pattern enables efficient HBase range scans to retrieve the latest model evaluation metrics without scanning the entire table.
+
+---
+
+## Infrastructure & PySpark Integration
+
+### Distributed Worker Connection Setup
+When writing to HBase from PySpark using `happybase` across partitions (e.g., via `foreachPartition` in `sparkml.py`), tasks execute on distributed executor nodes (`worker1`, `worker2`).
+
+* **Host Binding:** `happybase.Connection()` must **not** be set to `'localhost'`. When executed inside a Spark worker container, `'localhost'` attempts to connect to the worker node itself, causing a `ConnectionRefusedError [Errno 111]` on port 9090.
+* **Target Configuration:** Define the explicitly named master hostname or container IP running the Thrift service:
+  ```python
+  # sparkml.py (inside write_to_hbase_partition)
+  connection = happybase.Connection('master', port=9090)

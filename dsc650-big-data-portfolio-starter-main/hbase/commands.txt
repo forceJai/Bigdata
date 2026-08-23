@@ -2,7 +2,7 @@
 # Replace these comments with representative HBase commands from your project.
 #
 -- Create model_metrics table with two column families
-create 'model_metrics', 'metrics', 'predictions'
+create 'model_metrics'
 
 -- Describe table structure
 describe 'model_metrics'
