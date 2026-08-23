@@ -2,48 +2,49 @@
 
 ## Role in the Pipeline
 
-Apache Spark MLlib provides the distributed processing and machine learning layer for this project. The PySpark application reads project data from Hive, prepares the data for modeling, trains and evaluates a machine learning model, and generates model-performance metrics that are written into HBase.
+Apache Spark MLlib provides the distributed processing and machine learning layer for this project. The PySpark application ingests raw tabular patient data from Hive, executes distributed feature engineering, trains a binary classification model, evaluates key predictive metrics, and persists both aggregate model metrics and row-level inferencing results directly into HBase.
 
 ## Hive Input
 
-**Hive table:** `[Enter Hive table name]`
+**Hive table:** `heart_db.heart_disease`
 
-Explain what data Spark reads from Hive and which fields are used by the machine learning workflow.
+The PySpark application connects to the Hive metastore via `SparkSession.enableHiveSupport()` to read the `heart_db.heart_disease` table. The dataset includes categorical patient demographics (e.g., `gender`, `admission_type`), numeric clinical measures (e.g., `age`, `time_in_hospital`, `num_lab_procedures`), unique identifiers (`patient_id`), and the binary classification target column (`target` / `readmitted`).
 
 ## Data Preparation & Transformations
 
-Describe the important preprocessing or transformation steps performed before model training.
+Data preparation is orchestrated using a modular PySpark ML `Pipeline` (`spark/processing.py`):
 
-Examples may include:
-
-- selecting relevant features;
-- handling missing values;
-- encoding categorical fields;
-- assembling feature vectors;
-- scaling or normalization;
-- creating training and test datasets.
+* **Missing Value Handling:** Drops incomplete records containing null values via `.dropna()`.
+* **Identifier Verification:** Ensures each record possesses a unique `patient_id` key using `monotonically_increasing_id()`.
+* **Categorical Encoding:** Converts string features and categorical target labels into numerical indices using `StringIndexer`.
+* **Vector Assembly:** Combines numeric features and indexed categorical columns into a single dense vector (`raw_features`) using `VectorAssembler`.
+* **Feature Scaling:** Standardizes the assembled feature vector with `StandardScaler` to ensure zero mean and unit variance across features (`features`).
+* **Train-Test Split:** Partitioned using an 80/20 train/test split with a fixed random seed (`seed=42`).
 
 ## MLlib Algorithm
 
-**Algorithm:** `[Enter algorithm]`
+**Algorithm:** `Logistic Regression` (`pyspark.ml.classification.LogisticRegression`)
 
-Explain:
-
-- why this algorithm was appropriate for the selected dataset;
-- what prediction or modeling task it performs;
-- which features and target/label are used.
+* **Task:** Performs binary classification to predict patient heart disease risk (`0` or `1`).
+* **Rationale:** Offers high interpretability, efficient convergence on dense feature vectors, and direct output of calibrated prediction probabilities required for clinical risk scoring.
+* **Features & Target:** Trains on the standardized `features` vector to predict the indexed binary `label`.
 
 ## Training & Evaluation
 
-Summarize the training process and explain the evaluation metric or metrics used.
+The model evaluates test set performance across key classification performance indicators computed using `BinaryClassificationEvaluator` and `MulticlassClassificationEvaluator`.
 
-**Primary evaluation metric(s):** `[Enter metric(s)]`
+**Primary evaluation metric(s):** `AUC-ROC`, `Accuracy`
 
-Explain what the resulting values indicate about model performance.
+* **AUC-ROC:** Measures overall class separation capacity across all decision thresholds.
+* **Accuracy:** Quantifies the proportion of correct predictions out of total test instances.
+
+### Spark Submit Output
+
+![Spark Training Output](screenshots/spark-submit-output.png)
 
 ### Training Output
 
-![Spark Training Output](screenshots/spark-training-output1.png)
+![Spark Training Output](screenshots/spark-training-output.png)
 
 ### Model Evaluation
 
@@ -51,18 +52,15 @@ Explain what the resulting values indicate about model performance.
 
 ## Spark Submit / YARN Execution
 
-Document the exact `spark-submit` command used to submit the PySpark application through YARN.
+The PySpark application is submitted to run in distributed client mode on the YARN cluster manager, passing the dependency module via `--py-files`:
 
 ```bash
-# Paste your spark-submit command here
-```
-
-Briefly describe the successful execution and any important log or output information.
-
-![Spark Submit Output](screenshots/spark-submit-output1.png)
-
-## HBase Output
-
-List the model-performance metrics written by Spark into HBase and explain how the application connects the machine learning stage to the final persistence layer.
-
-**PySpark source files:** [`processing.py`](processing.py) and/or [`analysis.py`](analysis.py)
+spark-submit \
+  --master yarn \
+  --deploy-mode client \
+  --num-executors 2 \
+  --executor-cores 2 \
+  --executor-memory 2G \
+  --driver-memory 2G \
+  --py-files spark/processing.py \
+  spark/analysis.py
