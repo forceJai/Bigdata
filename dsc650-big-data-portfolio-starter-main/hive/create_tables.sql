@@ -1,14 +1,27 @@
--- DSC 650 Portfolio Starter
--- Replace this file with the Hive DDL from your final project.
---
--- Before publishing:
---   1. Remove credentials or environment-specific secrets.
---   2. Add short comments explaining important tables.
---   3. Keep the SQL that best demonstrates your work.
+--DSC 650 Portfolio Starter
+CREATE DATABASE IF NOT EXISTS heart_db;
+USE heart_db;
 
--- Example structure only:
--- CREATE EXTERNAL TABLE your_table (
---     id STRING,
---     ...
--- )
--- STORED AS ...;
+DROP TABLE IF EXISTS heart_disease;
+
+CREATE EXTERNAL TABLE IF NOT EXISTS heart_disease (
+    age INT,
+    sex INT,
+    cp INT,
+    trestbps INT,
+    chol INT,
+    fbs INT,
+    restecg INT,
+    thalach INT,
+    exang INT,
+    oldpeak DOUBLE,
+    slope INT,
+    ca INT,
+    thal INT,
+    target INT
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
+LOCATION '/user/root/data/'
+TBLPROPERTIES ("skip.header.line.count"="1");
